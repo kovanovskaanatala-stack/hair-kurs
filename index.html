@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест: Hairy Course</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #ffffff; color: #222222; padding: 20px; text-align: center; }
+        .card { background: #f5f5f5; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn { display: block; width: 100%; padding: 15px; margin: 10px 0; background: #fff; border: 1px solid #ccc; border-radius: 8px; font-size: 16px; cursor: pointer; text-align: left; }
+        .correct { background: #4caf50 !important; color: white; border-color: #4caf50; }
+        .wrong { background: #f44336 !important; color: white; border-color: #f44336; }
+    </style>
+</head>
+<body>
+
+    <div id="quiz">
+        <div class="card"><h3 id="q-text">Какое главное условие необходимо соблюсти, чтобы свободные аминокислоты удержались внутри структуры поврежденного блонда?</h3></div>
+        <button class="btn" onclick="check(this, true)">Применение технического продукта с кислым pH для фиксации за счет ионного притяжения.</button>
+        <button class="btn" onclick="check(this, false)">Прогревание состава утюжком на температуре 230°C.</button>
+    </div>
+
+    <div id="result" style="display:none;">
+        <div class="card">
+            <h2>Тест завершен!</h2>
+            <p id="res-text" style="font-size: 16px; line-height: 1.5; text-align: left;"></p>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function check(btn, isCorrect) {
+            // Отключаем кнопки после нажатия
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (isCorrect) {
+                btn.classList.add('correct');
+            } else {
+                btn.classList.add('wrong');
+                buttons[0].classList.add('correct'); // подсветить правильный
+            }
+
+            // Через 2 секунды показываем результат
+            setTimeout(() => {
+                document.getElementById('quiz').style.display = 'none';
+                document.getElementById('result').style.display = 'block';
+
+                const textBlock = document.getElementById('res-text');
+                if (isCorrect) {
+                    textBlock.innerHTML = "<b>Великолепно! Ты профи!</b><br><br>Ты отлично понимаешь разницу между гидрофобностью и работой ламеллярных эмульсий. Тебе пора переходить на уровень создания собственных протоколов.<br><br>🚀 <b>Ждем тебя на продвинутом уровне «Волосатого курса»!</b>";
+                } else {
+                    textBlock.innerHTML = "<b>Нужно подтянуть знания!</b><br><br>Ты спотыкаешься на химии процессов (pH, КМК). Из-за этих слепых зон у клиентов уход вымывается за неделю, а блондинки уходят с жесткими концами.<br><br>👉 <b>Чтобы исправить это и стать топ-технологом, ждем тебя на «Волосатом курсе»!</b>";
+                }
+
+                tg.MainButton.setText("ЗАКРЫТЬ ТЕСТ");
+                tg.MainButton.show();
+                tg.onEvent('mainButtonClicked', () => tg.close());
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
